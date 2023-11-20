@@ -1,5 +1,5 @@
 import request from '@/http/request'
-// import { resolve } from 'path-browserify'
+
 const res = [{
     "createBy": "admin",
     "createTime": "2023-10-26 20:18:06",
@@ -194,23 +194,23 @@ const res = [{
 // 查询部门列表
 
 export default {
-    getdepartmentbyid(id) {
+    getdeptyid(id) {
         return request({
-            url: '/department/getdepartmentbyid/' + id,
+            url: `dept/${id}`,
             method: 'get'
         })
     },
-    insnewDep(data) {
+    addDept(data) {
         return request({
-            url: '/department/insnewDep',
+            url: '/dept',
             method: 'post',
             data: data
         })
     }
     ,
-    updatenewDep(data) {
+    updateDep(data) {
         return request({
-            url: '/department/updatenewDep',
+            url: '/dept',
             method: 'put',
             data: data
         })
@@ -234,46 +234,22 @@ export default {
                 , 300);
             }
                 )
-        // return new Promise((resolve, reject) => {
-        //     setTimeout(() => {
-        //         resolve(res.forEach(element => {
-
-        //                   if(element.deptName==query.deptName){
-        //                         return element
-        //                   }
-                    
-        //             }));
-        //       }, 300);
-        //   }
-        //     )
-        // return request({
-        //     url: '/department/querydepa',
-        //     method: 'post',
-        //     params: query
-        // })
     },
-    listDept(query) {
+    //plan data
+    listDept(data) {
         
-
-          return new Promise((resolve, reject) => {
-             
-            setTimeout(() => {
-                resolve(res);
-              }, 300);
-          }
-            )
-        // return request({
-        //     url: '/system/dept/list',
-        //     method: 'get',
-        //     params: query
-        // })
+        return request({
+            url: '/dept/list',
+            method: 'post',
+            data: data
+        })
     }
     ,
-    DeptlistHierarchy(query) {
+    DeptlistHierarchy(data) {
         return request({
-            url: '/department/listHierarchy',
+            url: '/dept/listHierarchy',
             method: 'post',
-            params: query
+            data: data
         })
     }
     ,

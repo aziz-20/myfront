@@ -8,7 +8,7 @@ export function requestIntersept(config) {
     const isToken = (config.headers || {}).isToken === false
     const isRepeatSubmit = (config.headers || {}).repeatSubmit === false
     if (getToken() && !isToken) {
-        config.headers['Authorization'] = 'Bearer ' + getToken() // token
+        config.headers['Z-ACCESS-TOKEN'] =   getToken() // token
     }
 
     if (config.method === 'get' && config.params) {

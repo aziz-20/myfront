@@ -70,7 +70,7 @@ export default {
       if (this.$route.name !== tab.props.name) {
 
         this.$router.replace(nextview)
-        console.log(tab.props.name);
+    
       }
 
     }
