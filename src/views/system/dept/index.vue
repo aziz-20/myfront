@@ -1,12 +1,23 @@
 <template>
-  <div class="app-container">
-
+  <!-- <div class="app-container"> -->
+<!-- 
     <el-form :inline="true" :model="queryParams" ref="queryForm" size="small" class="demo-form-inline" v-show="showSearch">
-      <el-form-item label="deptName" prop="deptName">
-        <!-- <el-input v-model="queryParams.deptName" placeholder="deptName" clearable @keyup.enter.native="handleQuery">
+      <el-form-item label="deptName" prop="name">
+         <el-input v-model="queryParams.name" placeholder="deptName" clearable @keyup.enter.native="handleQuery">
         </el-input> -->
-        <treeselect  v-model="queryParams.deptName"  :options="deptOptions" :normalizer="normalizer" placeholder="Search"
-        clearable @keyup.enter.native="handleQuery" />
+        <!-- <treeselect  v-model="queryParams.Name"  :options="deptOptions" :normalizer="normalizer" placeholder="Search"
+        clearable @keyup.enter.native="handleQuery" /> -->
+        <!-- <el-autocomplete
+  popper-class="my-autocomplete"
+  v-model="queryParams.name"
+  :fetch-suggestions="querySearch"
+  placeholder="Please input"
+  @select="handleSelect">
+  <template slot-scope="props">
+    <div class="value">{{ props }}</div>
+    <span class="link">{{ props.item.link }}</span>
+  </template>
+</el-autocomplete>
       </el-form-item>
       <el-form-item label="userId" prop="userId">
         <el-input v-model="queryParams.userId" placeholder="userId" clearable @keyup.enter.native="handleQuery">
@@ -44,7 +55,8 @@
       :default-expand-all="isExpandAll"
       :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
     >
-    <el-table-column prop="deptName" label="Deptname" width="260"></el-table-column>
+    
+    <el-table-column prop="name" label="name" width="260"></el-table-column>
     
     <el-table-column prop="orderNum" label="sort" width="200"></el-table-column>
      
@@ -78,19 +90,26 @@
       </el-table-column>
     </el-table>
 
+    <pagination
+      v-show="total>0"
+      :total="total"
+      :page.sync="queryParams.pageNo"
+      :limit.sync="queryParams.pageSize"
+      @pagination="getList"
+    />
     <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-row>
           <el-col :span="24" v-if="form.parentId !== 0">
             <el-form-item label="parentId" prop="parentId">
-              <treeselect v-model="form.parentId" :options="deptOptions" :normalizer="normalizer" placeholder="parent id" />
+              <el-input v-model="form.parentId" :options="deptOptions"  placeholder="parent id" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="deptName" prop="deptName">
-              <el-input v-model="form.deptName" placeholder="deptName" />
+            <el-form-item label="deptName" prop="name">
+              <el-input v-model="form.name" placeholder="deptName" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -116,7 +135,7 @@
             <el-form-item label="email" prop="email">
               <el-input v-model="form.email" placeholder="email" maxlength="50" />
             </el-form-item>
-          </el-col>
+          </el-col> -->
           <!-- <el-col :span="12">
             <el-form-item label="部门状态">
               <el-radio-group v-model="form.status">
@@ -128,7 +147,7 @@
               </el-radio-group>
             </el-form-item>
           </el-col> -->
-        </el-row>
+        <!-- </el-row>
       </el-form>
 
       <div slot="footer" class="dialog-footer">
@@ -137,17 +156,16 @@
       </div>
     </el-dialog>
      
-  </div>
+  </div> -->
 </template>
 <script>
-import {handleTree} from "@/utils/index"
-  // import the component
-  import Treeselect from 'vue3-treeselect'
+// import {handleTree} from "@/utils/index"
+// import Treeselect from '@riophae/vue-treeselect'
   // import the styles
-  import 'vue3-treeselect/dist/vue3-treeselect.css'
+  // import '@riophae/vue-treeselect/dist/vue-treeselect.css'
   import  http from "@/http"
 export default {
-  components: { Treeselect },
+  // components: { Treeselect },
   data() {
     return {
        res : []
@@ -169,17 +187,21 @@ export default {
       refreshTable: true,
       showSearch: true,
       queryParams: {
-        deptName: undefined,
+        name: undefined,
         region: undefined,
         userId: undefined,
+        pageNo: 1,
+        pageSize: 10,
+        
       },
+      total: 0,
       form: {},
       // 表单校验
       rules: {
         parentId: [
           { required: true, message: "上级部门不能为空", trigger: "blur" }
         ],
-        deptName: [
+        name: [
           { required: true, message: "部门名称不能为空", trigger: "blur" }
         ],
         orderNum: [
@@ -211,12 +233,13 @@ export default {
       this.form = {
         deptId: undefined,
         parentId: undefined,
-        deptName: undefined,
+        name: undefined,
         orderNum: undefined,
         leader: undefined,
         phone: undefined,
         email: undefined,
-        status: "0"
+        status: "0",
+        delFlag: "0"
       };
       this.resetForm("form");
     },
@@ -233,13 +256,20 @@ export default {
       this.deptOptions = handleTree(this.res, "deptId");
     },
     handleUpdate(row) {
-      // this.reset();
+      this.reset();
+      this.$http.dept.getdeptyid(row.deptId).then(response => {
+        this.form = response.result;
+        this.open = true;
+        this.title = "update dept";
+        this.deptOptions = response.result;
+      });
       // this.form = response.data;
       this.open = true;
       // this.title = "update dept";
+      console.log(row)
 
       // getDept(row.deptId).then(response => {
-      //   this.form = response.data;
+        // this.form = row;
       //   this.open = true;
       //   this.title = "update dept";
         // listDeptExcludeChild(row.deptId).then(response => {
@@ -265,54 +295,55 @@ export default {
         if (valid) {
           if (this.form.deptId != undefined) {
             console.log(this.form)
-            this.open = false;
-            this.getList();
-            // updateDept(this.form).then(response => {
-            //   this.$modal.msgSuccess("修改成功");
-            //   this.open = false;
-            //   this.getList();
-            // });
+            this.open = true;
+            this.$http.dept.updateDept(this.form).then(response => {
+              this.$modal.msgSuccess("updated");
+              this.open = false;
+              this.getList();
+            });
           } else {
-            this.form.deptId = this.res.length + 100;
-            this.res.push(this.form)
-            this.open = false;
-            this.getList();
-            // addDept(this.form).then(response => {
-            //   this.$modal.msgSuccess("新增成功");
-            //   this.open = false;
-            //   this.getList();
-            // });
+            this.$http.dept.addDept(this.form).then(response => {
+              this.$modal.msgSuccess("new added");
+              this.open = false;
+              this.getList();
+            }).catch(error => {
+              this.$modal.msgError("新增失败");
+              this.open = false;
+              this.getList();
+            })
           }
         }
       });
     },
    
     handleQuery() {
-      if(this.queryParams.deptName != undefined || this.queryParams.userId != undefined ){
-        
-        this.loading = true;
-        http.dept.querydepa(this.queryParams).then(response => {
-          this.deptList = handleTree(response, "deptId");
-          this.loading = false;
-        }).catch(error => {
-          this.loading = true;
-          //messege
-        })
-        
-      }
-      else{
-        this.getList();
-      }
+   
+      this.queryParams.pageNo = 1;
+      this.getList();
   
 
     },
+    querySearch(){
+          
+       return this.deptList
+
+    },
+    listPlan(){
+        
+        this.$http.dept.listDept(this.queryParams).then(response =>{
+         
+              
+            
+        })
+    }
+    ,
     normalizer(node) {
       if (node.children && !node.children.length) {
         delete node.children;
       }
       return {
         id: node.deptId,
-        label: node.deptName,
+        label: node.name,
         children: node.children
       };
     },
@@ -324,18 +355,16 @@ export default {
     
     getList() {
       this.loading = true;
-      http.dept.listDept().then(response => {
-        this.deptList = handleTree(response, "deptId");
-        this.deptOptions = handleTree(response, "deptId");
+      http.dept.DeptlistHierarchy(this.queryParams).then(response => {
+        this.deptList = response.result.data;
+        this.total = response.result.total;
         this.loading = false;
-      });
-      // this.deptList = handleTree(this.res, "deptId");
-
-      //   this.loading = true;
-      //   listDept(this.queryParams).then(response => {
-      //     this.deptList = this.handleTree(response.data, "deptId");
-          // this.loading = false;
-      //   });
+        this.res = response
+      }).catch(error => {
+        this.loading = true;
+        //messege
+      })
+     
     },
     resetQuery() {
       this.resetForm("queryForm");
@@ -345,6 +374,14 @@ export default {
       if (this.$refs[refName]) {
         this.$refs[refName].resetFields();
       }
+    },
+    handleDelete(row) {
+      this.$modal.confirm('Are you sure to delete"' + row.name + '"data item？').then(function() {
+        return delDept(row.deptId);
+      }).then(() => {
+        this.getList();
+        this.$modal.msgSuccess("successfully deleted");
+      }).catch(() => {});
     }
   }
 }
