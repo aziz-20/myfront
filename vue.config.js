@@ -15,6 +15,22 @@ module.exports = defineConfig({
   },
   
   configureWebpack: {
+    devServer: {
+      host:process.env.VUE_APP_URL ,
+      port: process.env.VUE_APP_PORT,
+      open: true,
+      proxy: {
+        // detail: https://cli.vuejs.org/config/#devserver-proxy
+        [process.env.VUE_APP_API_BASE_URL]: {
+          target: `${process.env.VUE_APP_API_URL}:${process.env.VUE_APP_API_PORT}`,
+          ws: true,                                    
+          changeOrigin: true,                          
+          
+         
+        }
+      },
+     
+    },
     name: "vue-admin-template",
     resolve: {
       fallback: {

@@ -7,6 +7,7 @@ const request = axios.create({
       baseURL: process.env.VUE_APP_API_BASE_URL,
       timeout: 10000
   })
+  console.log(process.env.VUE_APP_API_BASE_URL)
 
 request.interceptors.request.use((config) => requestIntersept(config), error => {
   console.log(error);

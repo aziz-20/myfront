@@ -1,4 +1,4 @@
-<template>
+ <template>
     <div>
      <input v-model="email"   />
      <input v-model="password"   />
@@ -6,7 +6,7 @@
     </div>
     </template>
     <script>
-   
+      import { setToken } from '@/utils/auth'
       import  http from "@/http"
     export default {
      
@@ -23,14 +23,17 @@
       },
       methods: {
         
-        login(){
-           this.$http.user.login({
-             email : this.email,
-             password : this.password
-           }).then(res=>{
-             console.log(res)
-           })
+         login(){
+             this.$http.user.login({
+               email : this.email,
+               password : this.password
+             }).then(res=>{
+               console.log(res)
+                setToken(res.result)
+             })
+          }
         }
       }
-    }
-    </script>
+    
+    </script> 
+    

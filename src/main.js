@@ -1,4 +1,4 @@
-import { createApp } from 'vue'
+import { createApp, h } from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
@@ -17,6 +17,8 @@ import RightToolbar from "@/components/RightToolbar"
 export const app = createApp(App)
 
 
+
+app.config.globalProperties.$http = http
 app.use(store).use(router).component('svg-icon', SvgIcon).use(Element,{
     size:'medium' // set element-ui default size
   }).mount('#app')

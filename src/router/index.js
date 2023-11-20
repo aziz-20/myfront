@@ -71,7 +71,7 @@ import Layout from "@/Layout"
       {  
           path : 'products',
           name : 'products',
-          component :() =>import('@/views/products'),
+          component :() =>import('@/views/system/dept'),
           meta : {title : 'product', icon : 'dashboard', affix : false ,"noCache": true,
           "link": null},
           
