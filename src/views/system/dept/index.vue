@@ -84,7 +84,7 @@
             size="mini"
             type="text"
             icon="el-icon-delete"
-            @click="handleDelete(scope.row)" 
+       ttttttr     @click="handleDelete(scope.row)" 
           >Delete</el-button>
         </template>
       </el-table-column>

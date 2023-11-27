@@ -63,6 +63,18 @@ const getters = {
         "link": null
 
       }
+    },
+    {
+      id: 4,
+      name: 'menu',
+      path: '/menu',
+      meta: {
+        icon: 'edit',
+        title: 'menu',
+        "noCache": false,
+        "link": null
+
+      }
     }
   ]
      

@@ -64,6 +64,19 @@ import Layout from "@/Layout"
     ]
   } ,
   {
+    path : '/menu',
+    component : Layout,
+   
+    children : [
+      {
+        path : 'menu',
+        name : 'menu',
+        component : () => import('@/views/system/menu'),
+        meta : {title : 'menu', icon : 'dashboard'}
+      }
+    ]
+  },
+  {
     path: '/products',
     component : Layout,
     hidden : false,

@@ -1,39 +1,177 @@
- <template>
-    <div>
-     <input v-model="email"   />
-     <input v-model="password"   />
-     <div @click="login" style="width: 50ox;height: 0px;">login</div>
-    </div>
-    </template>
-    <script>
-      import { setToken } from '@/utils/auth'
-      import  http from "@/http"
-    export default {
-     
-     
-      data() {
-      return {
-       email : "",
-       password : ""
- 
-      }
-      },
-      created() {
-       
-      },
-      methods: {
-        
-         login(){
-             this.$http.user.login({
-               email : this.email,
-               password : this.password
-             }).then(res=>{
-               console.log(res)
-                setToken(res.result)
-             })
-          }
-        }
-      }
+<template>
+  <div>
+    <input v-model="email" />
+    <input v-model="password" />
+    <div @click="login" style="width: 50px;height: 0px;">login</div>
+    <div @click="openAddEdit" style="width: 50px;height: 0px; margin-left: 200px ;">edit</div>
+    <addoredit :open="ope" :mode="mode" :title="title" :init="init"  :fields="fields" @close="closeAddEdit" @submit="onsubmit">
+    </addoredit>
+    <div style="width: 50px;height: 0px; margin-left: 500px ;">{{ ope }}</div>
+    <div style="width: 50px;height: 0px; margin-left: 500px ;">{{ Form }}</div>
     
-    </script> 
+  </div>
+  
+</template>
+<script>
+import { setToken } from '@/utils/auth'
+import http from "@/http"
+import addoredit from "@/views/components/addoredit/index.vue"
+
+export default {
+
+  components: {
+    addoredit
+  },
+
+  data() {
+    return {
+      email: "",
+      password: "",
+      ope: false,
+      mode: "add",
+      title: "user",
+      Form: {},
+      init: {
+        username: "",
+        email: "",
+        password: "",
+        roles: [],
+        Phone: "",
+        country: "",
+        state: "",
+        city: "",
+        postcode: "",
+        detail: "",
+
+      }
+      ,
+      countryList: [
+        {
+          value: 'Option1',
+          label: 'Option1',
+
+        }
+        ,
+        {
+          value: 'Option2',
+          label: 'Option2',
+        },
+      ],
+      roles: [
+        {
+          value: 'Option1',
+          label: 'Option1',
+
+        }
+        ,
+        {
+          value: 'Option2',
+          label: 'Option2',
+        },]
+      ,
+      fields: [
+        { "type": "input", inputtype: "text", name: "username", label: "Username", placeholder: "Enter the username", span: "col-6", icon: 'Calendar' },
+        { "type": "input", inputtype: "email", name: "email", label: "E-mail", placeholder: "Enter the E-mail" },
+        { "type": "input", inputtype: "password", name: "password", label: "Password", placeholder: "Enter the password", data: null, span: "col-6" },
+        {
+          "type": "multipleSelect", inputtype: "multipleSelect", name: "roles", label: "Role", placeholder: "select the role", data: [
+            {
+              value: '1',
+              label: 'Level one 1',
+              children: [
+                {
+                  value: '1-1',
+                  label: 'Level two 1-1',
+                  children: [
+                    {
+                      value: '1-1-1',
+                      label: 'Level three 1-1-1',
+                    },
+                    {
+                      value: '1-1-2',
+                      label: 'Level three 1-1-2',
+                    }
+                  ],
+                },
+              ],
+            },
+            {
+              value: '2',
+              label: 'Level one 2',
+              children: [
+                {
+                  value: '2-1',
+                  label: 'Level two 2-1',
+                  children: [
+                    {
+                      value: '2-1-1',
+                      label: 'Level three 2-1-1',
+                    },
+                  ],
+                },
+                {
+                  value: '2-2',
+                  label: 'Level two 2-2',
+                  children: [
+                    {
+                      value: '2-2-1',
+                      label: 'Level three 2-2-1',
+                    },
+                  ],
+                },
+              ],
+            },]
+        },
+        { "type": "input", name: "Phone", label: "Phone", placeholder: "Enter the phone", data: null, inputtype: "phone", span: "col-6" },
+        {
+          "type": "address", label: { country: "Country", state: "State", city: "City", postcode: "Zipcode", detail: "Detail" }, name: { country: "country", state: "state", city: "city", postcode: "zipcode", detail: "detail" }, data: {
+            country: [
+              {
+                value: 'Option1',
+                label: 'Option1',
+
+              }
+              ,
+              {
+                value: 'Option2',
+                label: 'Option2',
+              },
+            ]
+          }
+        },
+
+      ]
+
+    }
+  },
+  created() {
+
+  },
+  methods: {
+
+    login() {
+      this.$http.user.login({
+        email: this.email,
+        password: this.password
+      }).then(res => {
+        console.log(res)
+        setToken(res.result)
+      })
+    },
+    openAddEdit() {
+      // this.ope ? this.ope = false : this.ope = true
+      this.ope = true
+    },
+    closeAddEdit() {
+      this.ope = false
+    },
+    onsubmit(n) {
+      this.Form = n
+    },
+  },
+
+}
+
+
+</script> 
     
